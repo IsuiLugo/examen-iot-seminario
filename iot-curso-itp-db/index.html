@@ -9,10 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="front-end/css/styles.css">
+        <link rel="stylesheet" href="front-end/css/styles.css">
+   
     <title>Internet of Things</title>
 </head>
 
@@ -33,62 +31,76 @@
             <article>
                 <div class="switch-holder">
                     <div class="switch-label">
-                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i><span>LED 1</span>
+                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i><span>Foco</span>
                     </div>
                     <div class="switch-toggle">
-                        <input type="checkbox" id="led1">
-                        <label for="led1"></label>
+                        <input type="checkbox" id="foco">
+                        <label for="foco"></label>
                     </div>
-
-                    <h5 class="ms-4 p-2 rounded border border-primary shadow" id="msjLed1"></h5>
-
-                </div>
-
-                <div class="switch-holder">
-                    <div class="switch-label">
-                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i><span>LED 2</span>
-                    </div>
-                    <div class="switch-toggle">
-                        <input type="checkbox" id="led2">
-                        <label for="led2"></label>
-                    </div>
-                    <h5 class="ms-4 p-2 rounded border border-primary shadow" id="msjLed2"></h5>
-                </div>
-                <div class="switch-holder">
-                    <div class="switch-label">
-                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i><span>LED 3</span>
-                    </div>
-                    <div class="switch-toggle">
-                        <input type="checkbox" id="led3">
-                        <label for="led3"></label>
-                    </div>
-                    <h5 class="ms-4 p-2 rounded border border-primary shadow" id="msjLed3"></h5>
-                </div>
-
-                <div class="switch-holder">
-                    <div class="switch-label">
-                        <i class="fa fa-bolt" aria-hidden="true"></i><span>Relé</span>
-                    </div>
-                    <div class="switch-toggle">
-                        <input type="checkbox" id="rele">
-                        <label for="rele"></label>
-                    </div>
-                    <h5 class="ms-4 p-2 rounded border border-primary shadow" id="msjRele"></h5>
+                    <h5 class="ms-4 p-2 rounded border border-primary shadow" id="msjFoco"></h5>
                 </div>
             </article>
         </section>
+        
+        <div class="d-flex justify-content-center mt-5">
+            <div class="potentiometer" data-value="0"></div>
+        </div>
+        
+        <div class="d-flex justify-content-center mt-3">
+            <input type="text" id="parametro" placeholder="Ingrese el parámetro">
+            <button id="enviarBtn">Enviar</button>
+        </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"
         integrity="sha512-suUtSPkqYmFd5Ls30Nz6bjDX+TCcfEzhFfqjijfdggsaFZoylvTj+2odBzshs0TCwYrYZhQeCgHgJEkncb2YVQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="front-end/js/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var potentiometer = $(".potentiometer");
+            var min = 0;
+            var max = 100;
+            
+            potentiometer.on("mousemove", function (event) {
+                var mouseY = event.clientY;
+                var rect = potentiometer[0].getBoundingClientRect();
+                var potentiometerHeight = rect.height;
+                
+                var value = Math.round((mouseY - rect.top) / potentiometerHeight * (max - min) + min);
+                value = Math.max(min, Math.min(max, value));
+                
+                potentiometer.attr("data-value", value);
+            });
+            
+            $("#enviarBtn").on("click", function () {
+                var parametro = $("#parametro").val();
+                
+                // Aquí puedes llamar a tu función para enviar el parámetro a tu API en PHP
+                enviarParametroAPI(parametro);
+            });
+        });
+        
+        function enviarParametroAPI(parametro) {
+            // Aquí puedes hacer una solicitud AJAX a tu API en PHP para enviar el parámetro
+            // Puedes usar jQuery.ajax o la función fetch en JavaScript para realizar la solicitud
+            
+            // Ejemplo usando jQuery.ajax:
+            $.ajax({
+                url: "setStatusPotenciometro.php",
+                method: "POST",
+                data: { parametro: parametro },
+                success: function (response) {
+                    console.log("Parámetro enviado a la API: " + parametro);
+                },
+                error: function (error) {
+                    console.log("Error al enviar el parámetro a la API: " + error);
+                }
+            });
+        }
+    </script>
+
 </body>
 
 </html>
