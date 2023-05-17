@@ -83,3 +83,37 @@ body {
   background-color: #00b33c;
   box-shadow: -3px -3px 5px rgba(255, 255, 255, 0.5), 3px 3px 5px #00b33c;
 }
+
+/* Estilos para el potenciómetro */
+.potentiometer {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #00b4db, #0083b0);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.potentiometer::before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 50%;
+    background: #fff;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    transition: height 0.2s;
+}
+
+.potentiometer::after {
+    content: attr(data-value);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
